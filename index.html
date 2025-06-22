@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Environmental Decision Impact Comparison</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f7f7f7;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px 0;
+            width: 100%;
+            text-align: center;
+            font-size: 1.5em;
+        }
+
+        .form-container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            max-width: 600px;
+            margin-top: 20px;
+        }
+
+        .form-container h2 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            font-weight: bold;
+            color: #555;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .input-group textarea {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+            resize: vertical;
+        }
+
+        .input-group button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .input-group button:hover {
+            background-color: #45a049;
+        }
+
+        .output-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            max-width: 600px;
+            margin-top: 30px;
+            display: none;
+        }
+
+        .output-container p {
+            font-size: 18px;
+            color: #555;
+        }
+
+        .output-container h3 {
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    Environmental Decision Impact Comparison
+</header>
+
+<div class="form-container">
+    <h2>Compare Two Environmental Decisions</h2>
+    <form id="decisionForm">
+        <div class="input-group">
+            <label for="decision1">Decision 1</label>
+            <textarea id="decision1" placeholder="Describe decision 1..." rows="4"></textarea>
+        </div>
+        <div class="input-group">
+            <label for="decision2">Decision 2</label>
+            <textarea id="decision2" placeholder="Describe decision 2..." rows="4"></textarea>
+        </div>
+        <div class="input-group">
+            <button type="submit">Compare Decisions</button>
+        </div>
+    </form>
+</div>
+
+<div class="output-container" id="outputContainer">
+    <h3>Results</h3>
+    <p id="resultText">Your environmental comparison will appear here...</p>
+</div>
+
+<script>
+    // Function to handle the form submission and call GPT
+    document.getElementById('decisionForm').addEventListener('submit', async function (e) {
+        e.preventDefault();
+
+        // Get user input values
+        const decision1 = document.getElementById('decision1').value;
+        const decision2 = document.getElementById('decision2').value;
+
+        if (!decision1 || !decision2) {
+            alert("Please fill out both decision fields.");
+            return;
+        }
+
+        // Send the input to the server (or your GPT API handler)
+        try {
+            const response = await fetch('/process-decisions', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ decision1, decision2 })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                // Show the results in the output container
+                document.getElementById('outputContainer').style.display = 'block';
+                document.getElementById('resultText').textContent = data.message;
+            } else {
+                alert('There was an error processing your request.');
+            }
+        } catch (error) {
+            console.error("Error:", error);
+            alert('An error occurred while processing your request.');
+        }
+    });
+</script>
+
+</body>
+</html>
